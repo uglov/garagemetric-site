@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Delete a GarageMetric account and associated cloud data.">
+  <title>Delete Account · GarageMetric</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="shell nav">
+    <a class="brand" href="../">GARAGE<span>METRIC</span></a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../privacy/">Privacy</a>
+      <a href="./">Delete account</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="shell prose">
+    <p class="kicker">GARAGEMETRIC CLOUD</p>
+    <h1>Delete your account</h1>
+    <p class="lead">
+      You can permanently delete your GarageMetric Cloud account and associated
+      cloud data either from the app or directly from this page.
+    </p>
+
+    <section>
+      <h2>Delete from the GarageMetric app</h2>
+      <ol>
+        <li>Open GarageMetric and sign in.</li>
+        <li>Open <strong>More → Cloud Account</strong>.</li>
+        <li>Select <strong>Delete account</strong>.</li>
+        <li>Review the warning and confirm the second destructive prompt.</li>
+      </ol>
+      <p>
+        After successful deletion, the app signs out and clears the deleted
+        account workspace on the current device.
+      </p>
+    </section>
+
+    <section>
+      <h2>Delete from the web</h2>
+      <p>
+        This form authenticates directly with GarageMetric's Supabase project.
+        Your password is sent to Supabase Auth over HTTPS and is not stored by
+        this GitHub Pages website.
+      </p>
+
+      <div class="card">
+        <form id="delete-form" class="form">
+          <label>
+            GarageMetric account email
+            <input id="email" type="email" autocomplete="username" required>
+          </label>
+          <label>
+            Password
+            <input id="password" type="password" autocomplete="current-password" required>
+          </label>
+          <label class="check">
+            <input id="confirm" type="checkbox" required>
+            <span>I understand that this permanently deletes my GarageMetric Cloud account and associated cloud data.</span>
+          </label>
+          <button id="delete-button" class="button danger" type="submit">Delete account permanently</button>
+        </form>
+        <p id="status" class="meta" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="notice">
+        Account deletion is irreversible. Use this form only for an account you
+        intend to permanently delete.
+      </div>
+    </section>
+
+    <section>
+      <h2>What is deleted</h2>
+      <ul>
+        <li>Your GarageMetric Cloud authentication account.</li>
+        <li>Synced vehicle, maintenance, service-history and reminder records associated with the account.</li>
+        <li>GarageMetric cloud backup data associated with the account.</li>
+        <li>Private cloud attachments stored for that account.</li>
+      </ul>
+      <p>
+        If you delete through the app, the current device's account workspace
+        and scheduled GarageMetric reminders are also cleared. Other devices
+        can retain local offline copies until their GarageMetric application
+        data is cleared or the app is uninstalled; after cloud account deletion,
+        those devices can no longer authenticate to the deleted account.
+      </p>
+    </section>
+
+    <section>
+      <h2>Retention after deletion</h2>
+      <p>
+        GarageMetric removes the active account and associated application data
+        when deletion succeeds. Infrastructure providers may retain limited
+        backup, security or audit information temporarily where necessary for
+        service reliability, fraud prevention or legal obligations.
+      </p>
+    </section>
+
+    <section>
+      <h2>Need help?</h2>
+      <p>
+        For account-deletion questions, contact the GarageMetric developer
+        through <a href="https://github.com/uglov" rel="noopener">github.com/uglov</a>.
+        Never post your password or authentication tokens publicly.
+      </p>
+    </section>
+  </div>
+</main>
+<footer class="footer">
+  <div class="shell footer-row">
+    <span>© 2026 GarageMetric</span>
+    <span><a href="../">Home</a> · <a href="../privacy/">Privacy</a></span>
+  </div>
+</footer>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const supabase = createClient(
+    'https://bjilhaqxdiahhsifgjwq.supabase.co',
+    'sb_publishable_UfRLtL2JNu8vcKuX-IXF0g_2H0YJZNK',
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    },
+  );
+
+  const form = document.getElementById('delete-form');
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+  const confirm = document.getElementById('confirm');
+  const button = document.getElementById('delete-button');
+  const status = document.getElementById('status');
+
+  function show(message, kind='meta') {
+    status.className = kind;
+    status.textContent = message;
+  }
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!confirm.checked) return;
+
+    button.disabled = true;
+    show('Authenticating and deleting your account…');
+
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.value.trim(),
+        password: password.value,
+      });
+
+      if (signInError) {
+        throw new Error('Could not authenticate this GarageMetric account. Check the email and password.');
+      }
+
+      const { data, error } = await supabase.functions.invoke('delete-account', {
+        body: { confirm: true },
+      });
+
+      if (error || !data || data.deleted !== true) {
+        throw new Error('Account deletion could not be completed. Please try again.');
+      }
+
+      try {
+        await supabase.auth.signOut({ scope: 'local' });
+      } catch {}
+
+      form.reset();
+      form.hidden = true;
+      show('Your GarageMetric Cloud account and associated cloud data were deleted.', 'success');
+    } catch (error) {
+      show(error instanceof Error ? error.message : String(error), 'error');
+      button.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
