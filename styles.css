@@ -12,7 +12,7 @@ a{color:var(--text);text-underline-offset:3px}a:hover{color:var(--accent)}
 .site-header{position:sticky;top:0;z-index:10;background:rgba(8,9,10,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{text-decoration:none;font-weight:900;letter-spacing:.12em;font-size:.9rem}.brand span{color:var(--accent)}
-.nav-links{display:flex;gap:18px;flex-wrap:wrap}.nav-links a{text-decoration:none;color:var(--muted);font-size:.92rem;font-weight:700}.nav-links a:hover{color:var(--text)}
+.nav-links{display:flex;gap:18px;flex-wrap:wrap;align-items:center}.nav-links a{text-decoration:none;color:var(--muted);font-size:.92rem;font-weight:700}.nav-links a:hover{color:var(--text)}.lang-switch{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px}.lang-switch a{padding:3px 7px;border-radius:999px;font-size:.78rem}.lang-switch a.active{background:var(--text);color:var(--bg)}
 main{padding:72px 0 80px}.hero{padding:44px 0 54px}
 .kicker{margin:0 0 12px;color:var(--accent);font-size:.78rem;font-weight:900;letter-spacing:.16em}
 h1{font-size:clamp(2.5rem,7vw,5rem);line-height:1.02;letter-spacing:-.04em;margin:0 0 20px}
