@@ -117,20 +117,9 @@
   </div>
 </footer>
 
-<script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-  const supabase = createClient(
-    'https://bjilhaqxdiahhsifgjwq.supabase.co',
-    'sb_publishable_UfRLtL2JNu8vcKuX-IXF0g_2H0YJZNK',
-    {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false,
-      },
-    },
-  );
+<script>
+  const supabaseUrl = 'https://bjilhaqxdiahhsifgjwq.supabase.co';
+  const publishableKey = 'sb_publishable_UfRLtL2JNu8vcKuX-IXF0g_2H0YJZNK';
 
   const form = document.getElementById('delete-form');
   const email = document.getElementById('email');
@@ -144,6 +133,62 @@
     status.textContent = message;
   }
 
+  async function authenticate(accountEmail, accountPassword) {
+    const response = await fetch(
+      `${supabaseUrl}/auth/v1/token?grant_type=password`,
+      {
+        method: 'POST',
+        headers: {
+          apikey: publishableKey,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: accountEmail,
+          password: accountPassword,
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        'Could not authenticate this GarageMetric account. Check the email and password.',
+      );
+    }
+
+    const data = await response.json();
+    if (!data?.access_token) {
+      throw new Error('Authentication returned an invalid response.');
+    }
+
+    return data.access_token;
+  }
+
+  async function deleteAccount(accessToken) {
+    const response = await fetch(
+      `${supabaseUrl}/functions/v1/delete-account`,
+      {
+        method: 'POST',
+        headers: {
+          apikey: publishableKey,
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ confirm: true }),
+      },
+    );
+
+    let data = null;
+    try {
+      data = await response.json();
+    } catch {}
+
+    if (!response.ok || data?.deleted !== true) {
+      throw new Error(
+        data?.error || 'Account deletion could not be completed. Please try again.',
+      );
+    }
+  }
+
   form.addEventListener('submit', async event => {
     event.preventDefault();
     if (!confirm.checked) return;
@@ -151,33 +196,32 @@
     button.disabled = true;
     show('Authenticating and deleting your account…');
 
+    let accessToken = null;
+
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.value.trim(),
-        password: password.value,
-      });
+      accessToken = await authenticate(
+        email.value.trim(),
+        password.value,
+      );
 
-      if (signInError) {
-        throw new Error('Could not authenticate this GarageMetric account. Check the email and password.');
-      }
+      await deleteAccount(accessToken);
 
-      const { data, error } = await supabase.functions.invoke('delete-account', {
-        body: { confirm: true },
-      });
-
-      if (error || !data || data.deleted !== true) {
-        throw new Error('Account deletion could not be completed. Please try again.');
-      }
-
-      try {
-        await supabase.auth.signOut({ scope: 'local' });
-      } catch {}
-
+      accessToken = null;
+      password.value = '';
       form.reset();
       form.hidden = true;
-      show('Your GarageMetric Cloud account and associated cloud data were deleted.', 'success');
+
+      show(
+        'Your GarageMetric Cloud account and associated cloud data were deleted.',
+        'success',
+      );
     } catch (error) {
-      show(error instanceof Error ? error.message : String(error), 'error');
+      accessToken = null;
+      password.value = '';
+      show(
+        error instanceof Error ? error.message : String(error),
+        'error',
+      );
       button.disabled = false;
     }
   });
