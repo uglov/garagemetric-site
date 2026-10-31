@@ -4,9 +4,18 @@ Public support site for GarageMetric.
 
 ## Pages
 
+English:
 - Home: `/`
 - Privacy Policy: `/privacy/`
 - Account deletion: `/delete-account/`
+
+Ukrainian:
+- Home: `/uk/`
+- Privacy Policy: `/uk/privacy/`
+- Account deletion: `/uk/delete-account/`
+
+Every public page exposes an EN / UA language switch while keeping the English
+URLs stable for Google Play and other store metadata.
 
 The account-deletion page uses direct HTTPS `fetch` calls to Supabase Auth and
 the production `delete-account` Edge Function. It has no third-party runtime
