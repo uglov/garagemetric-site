@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Видалення GarageMetric акаунта та пов’язаних хмарних даних.">
+  <link rel="alternate" hreflang="en" href="https://uglov.github.io/garagemetric-site/delete-account/">
+  <link rel="alternate" hreflang="uk" href="https://uglov.github.io/garagemetric-site/uk/delete-account/">
+  <title>Видалити акаунт · GarageMetric</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="shell nav">
+    <a class="brand" href="../">GARAGE<span>METRIC</span></a>
+    <nav class="nav-links" aria-label="Головна навігація">
+      <a href="../privacy/">Конфіденційність</a>
+      <a href="./">Видалити акаунт</a>
+      <span class="lang-switch" aria-label="Мова">
+        <a href="../../delete-account/" lang="en">EN</a>
+        <a class="active" href="./" lang="uk">UA</a>
+      </span>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="shell prose">
+    <p class="kicker">GARAGEMETRIC CLOUD</p>
+    <h1>Видалити акаунт</h1>
+    <p class="lead">
+      Ви можете назавжди видалити GarageMetric Cloud акаунт і пов’язані хмарні
+      дані безпосередньо в застосунку або через цю сторінку.
+    </p>
+
+    <section>
+      <h2>Видалення в застосунку GarageMetric</h2>
+      <ol>
+        <li>Відкрийте GarageMetric та увійдіть у свій акаунт.</li>
+        <li>Відкрийте <strong>Ще → Хмарний акаунт</strong>.</li>
+        <li>Натисніть <strong>Видалити акаунт</strong>.</li>
+        <li>Перегляньте попередження та підтвердьте другий запит на безповоротне видалення.</li>
+      </ol>
+      <p>
+        Після успішного видалення застосунок виконає вихід і очистить робочий
+        простір видаленого акаунта на поточному пристрої.
+      </p>
+    </section>
+
+    <section>
+      <h2>Видалення через веб</h2>
+      <p>
+        Ця форма автентифікується безпосередньо в Supabase-проєкті GarageMetric.
+        Ваш пароль передається до Supabase Auth через HTTPS і не зберігається
+        цим сайтом GitHub Pages.
+      </p>
+
+      <div class="card">
+        <form id="delete-form" class="form">
+          <label>
+            Email GarageMetric акаунта
+            <input id="email" type="email" autocomplete="username" required>
+          </label>
+          <label>
+            Пароль
+            <input id="password" type="password" autocomplete="current-password" required>
+          </label>
+          <label class="check">
+            <input id="confirm" type="checkbox" required>
+            <span>Я розумію, що ця дія назавжди видалить мій GarageMetric Cloud акаунт і пов’язані хмарні дані.</span>
+          </label>
+          <button id="delete-button" class="button danger" type="submit">Видалити акаунт назавжди</button>
+        </form>
+        <p id="status" class="meta" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="notice">
+        Видалення акаунта є безповоротним. Використовуйте цю форму лише для
+        акаунта, який справді потрібно назавжди видалити.
+      </div>
+    </section>
+
+    <section>
+      <h2>Що буде видалено</h2>
+      <ul>
+        <li>Ваш GarageMetric Cloud автентифікаційний акаунт.</li>
+        <li>Синхронізовані записи про транспорт, план ТО, історію сервісу та нагадування, пов’язані з акаунтом.</li>
+        <li>Хмарні резервні копії GarageMetric, пов’язані з акаунтом.</li>
+        <li>Приватні хмарні вкладення, збережені для цього акаунта.</li>
+      </ul>
+      <p>
+        Якщо ви видаляєте акаунт через застосунок, робочий простір поточного
+        пристрою та заплановані нагадування GarageMetric також очищаються.
+        Інші пристрої можуть зберігати локальні офлайн-копії, доки дані GarageMetric
+        на них не буде очищено або застосунок не буде видалено. Після видалення
+        хмарного акаунта ці пристрої більше не зможуть авторизуватися в ньому.
+      </p>
+    </section>
+
+    <section>
+      <h2>Зберігання після видалення</h2>
+      <p>
+        Після успішного видалення GarageMetric прибирає активний акаунт і
+        пов’язані прикладні дані. Постачальники інфраструктури можуть тимчасово
+        зберігати обмежені резервні, технічні або аудиторські записи, якщо це
+        необхідно для надійності сервісу, запобігання шахрайству або виконання
+        юридичних зобов’язань.
+      </p>
+    </section>
+
+    <section>
+      <h2>Потрібна допомога?</h2>
+      <p>
+        З питань видалення акаунта звертайтеся до розробника GarageMetric через
+        <a href="https://github.com/uglov" rel="noopener">github.com/uglov</a>.
+        Ніколи не публікуйте пароль або токени автентифікації у відкритому доступі.
+      </p>
+    </section>
+  </div>
+</main>
+<footer class="footer">
+  <div class="shell footer-row">
+    <span>© 2026 GarageMetric</span>
+    <span><a href="../">Головна</a> · <a href="../privacy/">Конфіденційність</a></span>
+  </div>
+</footer>
+
+<script>
+  const supabaseUrl = 'https://bjilhaqxdiahhsifgjwq.supabase.co';
+  const publishableKey = 'sb_publishable_UfRLtL2JNu8vcKuX-IXF0g_2H0YJZNK';
+
+  const form = document.getElementById('delete-form');
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+  const confirm = document.getElementById('confirm');
+  const button = document.getElementById('delete-button');
+  const status = document.getElementById('status');
+
+  function show(message, kind='meta') {
+    status.className = kind;
+    status.textContent = message;
+  }
+
+  async function authenticate(accountEmail, accountPassword) {
+    const response = await fetch(
+      `${supabaseUrl}/auth/v1/token?grant_type=password`,
+      {
+        method: 'POST',
+        headers: {
+          apikey: publishableKey,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: accountEmail,
+          password: accountPassword,
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        'Не вдалося автентифікувати GarageMetric акаунт. Перевірте email і пароль.',
+      );
+    }
+
+    const data = await response.json();
+    if (!data?.access_token) {
+      throw new Error('Служба автентифікації повернула некоректну відповідь.');
+    }
+
+    return data.access_token;
+  }
+
+  async function deleteAccount(accessToken) {
+    const response = await fetch(
+      `${supabaseUrl}/functions/v1/delete-account`,
+      {
+        method: 'POST',
+        headers: {
+          apikey: publishableKey,
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ confirm: true }),
+      },
+    );
+
+    let data = null;
+    try {
+      data = await response.json();
+    } catch {}
+
+    if (!response.ok || data?.deleted !== true) {
+      throw new Error(
+        data?.error || 'Не вдалося завершити видалення акаунта. Спробуйте ще раз.',
+      );
+    }
+  }
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!confirm.checked) return;
+
+    button.disabled = true;
+    show('Автентифікація та видалення акаунта…');
+
+    let accessToken = null;
+
+    try {
+      accessToken = await authenticate(
+        email.value.trim(),
+        password.value,
+      );
+
+      await deleteAccount(accessToken);
+
+      accessToken = null;
+      password.value = '';
+      form.reset();
+      form.hidden = true;
+
+      show(
+        'Ваш GarageMetric Cloud акаунт і пов’язані хмарні дані видалено.',
+        'success',
+      );
+    } catch (error) {
+      accessToken = null;
+      password.value = '';
+      show(
+        error instanceof Error ? error.message : String(error),
+        'error',
+      );
+      button.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
