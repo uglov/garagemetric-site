@@ -8,10 +8,11 @@ Public support site for GarageMetric.
 - Privacy Policy: `/privacy/`
 - Account deletion: `/delete-account/`
 
-The account-deletion page authenticates a GarageMetric user directly with
-Supabase Auth and invokes the production `delete-account` Edge Function. The
-Supabase publishable key is intentionally public client configuration; no
-service-role key or server secret is stored in this repository.
+The account-deletion page uses direct HTTPS `fetch` calls to Supabase Auth and
+the production `delete-account` Edge Function. It has no third-party runtime
+JavaScript dependency. The Supabase publishable key is intentionally public
+client configuration; no service-role key or server secret is stored in this
+repository.
 
 ## GitHub Pages
 
